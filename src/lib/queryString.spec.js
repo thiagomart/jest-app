@@ -1,4 +1,4 @@
-const { queryString, parse } = require('./queryStrings');
+import { queryString, parse } from './queryStrings';
 const obj = {
   name: 'Thiago',
   profession: 'developer',
