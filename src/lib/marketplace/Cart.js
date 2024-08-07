@@ -1,7 +1,7 @@
 import _find from 'lodash/find';
 import _remove from 'lodash/remove';
 import Dinero from 'dinero.js';
-
+import { calculateDiscount } from './Shared';
 const Money = Dinero;
 
 Money.defaultCurrency = 'BRL';
@@ -20,8 +20,13 @@ class Cart {
     this.items.push(item);
   }
   getTotal() {
-    return this.items.reduce((acc, item) => {
-      return acc.add(Money({ amount: item.quantity * item.product.price }));
+    return this.items.reduce((acc, { quantity, product, condition }) => {
+      const amount = Money({ amount: quantity * product.price });
+      let discount = Money({ amount: 0 });
+      if (condition) {
+        discount = calculateDiscount(amount, quantity, condition);
+      }
+      return acc.add(amount).subtract(discount);
     }, Money({ amount: 0 }));
   }
   remove(product) {
